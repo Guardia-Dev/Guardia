@@ -29,18 +29,25 @@ class Article(db.Model):
     title = db.Column(db.String(64), index = True, unique = True)
     pub_date = db.Column(db.DateTime)
     body = db.Column(db.Text)
+    brief = db.Column(db.Text)
 
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category', backref = db.backref('posts', lazy = 'dynamic'))
 
-    def __init__(self, title = '', body = '', category_id = 1, pub_date = None):
+    def __init__(self, title = '', body = '', brief = '', category_id = 1, pub_date = None, author = ''):
         self.title = title
         self.body = body
         self.category_id = category_id
+        self.author = author
         if pub_date is None:
             self.pub_date = datetime.utcnow()
         else:
             self.pub_date = pub_date
+        if brief is '':
+            endIndex = min(120, len(self.body))
+            self.brief = self.body[:endIndex]
+        else:
+            self.brief = brief
 
     def __repr__(self):
         return '<Article %r>' % self.title
@@ -70,4 +77,21 @@ class Category(db.Model):
             'name': self.name,
         }
 
+class Codes(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    code = db.Column(db.Text)
+    result = db.Column(db.Text)
 
+    def __init__(self, code = '', result = ''):
+        self.code = code
+        self.result = result
+
+    def __repr__(self):
+        return '<Code %r>' % self.id
+
+    def toDict(self):
+        return {
+            'id': self.id,
+            'code': self.code,
+            'result': self.code,
+        }

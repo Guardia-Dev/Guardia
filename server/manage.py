@@ -24,7 +24,7 @@ login_manager.init_app(app)
 # flask_admin
 class AdminModelView(ModelView):
     def is_accessible(self):
-        if current_user.is_authenticated and current_user.nickname == 'Desgard_Duan':
+        if current_user.is_authenticated and current_user.nickname == 'gua':
             return True
         return False
 
